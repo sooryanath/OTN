@@ -18,7 +18,7 @@ export const SELLER = {
 };
 
 export const BUYER_SAME_STATE = {
-  gstin: "27AACCM9910C1ZM",
+  gstin: "27AACCM9910C1ZN",
   legalName: "Mahalaxmi Auto Assemblies Pvt Ltd",
   stateCode: "27",
   address: "Gat 210, Chakan Industrial Area",
@@ -27,7 +27,7 @@ export const BUYER_SAME_STATE = {
 };
 
 export const BUYER_OTHER_STATE = {
-  gstin: "29AACCM9910C1ZH",
+  gstin: "29AACCM9910C1ZJ",
   legalName: "Peenya Drivetrain Systems Pvt Ltd",
   stateCode: "29",
   address: "Unit 7, Peenya Industrial Area",

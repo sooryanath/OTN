@@ -5,7 +5,7 @@ import { checkGstin, gstinCheckCharacter, isValidGstin, stateName } from "@/lib/
 describe("GSTIN validation", () => {
   it("accepts well-formed GSTINs with a correct check character", () => {
     expect(isValidGstin("27AAPFU0939F1ZV")).toBe(true);
-    expect(isValidGstin("29AACCM9910C1ZH")).toBe(true);
+    expect(isValidGstin("29AACCM9910C1ZJ")).toBe(true);
   });
 
   it("normalises case and whitespace", () => {

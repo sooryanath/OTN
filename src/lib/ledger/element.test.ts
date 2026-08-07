@@ -61,7 +61,7 @@ describe("derived element status", () => {
   });
 
   it("matches once both parties have signed", () => {
-    expect(deriveStatus(["27AAPFU0939F1ZV", "27AACCM9910C1ZM"], false)).toBe("MATCHED");
+    expect(deriveStatus(["27AAPFU0939F1ZV", "27AACCM9910C1ZN"], false)).toBe("MATCHED");
   });
 
   it("does not match on two signatures from the same party", () => {
@@ -71,6 +71,6 @@ describe("derived element status", () => {
   });
 
   it("a dispute outranks signatures", () => {
-    expect(deriveStatus(["27AAPFU0939F1ZV", "27AACCM9910C1ZM"], true)).toBe("DISPUTED");
+    expect(deriveStatus(["27AAPFU0939F1ZV", "27AACCM9910C1ZN"], true)).toBe("DISPUTED");
   });
 });
