@@ -1,3 +1,4 @@
+import type { Json } from "@/integrations/supabase/types";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { generateKeyMaterial, signHash, verifyHash } from "@/lib/crypto";
 import { checkGstin, gstinStateCode } from "@/lib/gstin";
@@ -42,7 +43,7 @@ export async function createParticipant(userId: string, input: ParticipantInput)
       phone: input.phone ?? null,
       endpoint: input.endpoint ?? "loopback",
       key_id: key.keyId,
-      public_key_jwk: key.publicKeyJwk as unknown as Record<string, unknown>,
+      public_key_jwk: key.publicKeyJwk as unknown as Json,
       profiles: input.profiles ?? ["gst-einvoice"],
     })
     .select()
@@ -53,7 +54,7 @@ export async function createParticipant(userId: string, input: ParticipantInput)
   const { error: keyError } = await supabaseAdmin.from("participant_private_keys").insert({
     gstin,
     key_id: key.keyId,
-    private_key_jwk: key.privateKeyJwk as unknown as Record<string, unknown>,
+    private_key_jwk: key.privateKeyJwk as unknown as Json,
   });
   if (keyError) throw new Error(keyError.message);
 
@@ -90,7 +91,7 @@ export async function rotateParticipantKey(userId: string, gstin: string) {
   await supabaseAdmin.from("participant_private_keys").insert({
     gstin,
     key_id: next.keyId,
-    private_key_jwk: next.privateKeyJwk as unknown as Record<string, unknown>,
+    private_key_jwk: next.privateKeyJwk as unknown as Json,
   });
 
   await supabaseAdmin
@@ -103,8 +104,8 @@ export async function rotateParticipantKey(userId: string, gstin: string) {
     .from("participants")
     .update({
       key_id: next.keyId,
-      public_key_jwk: next.publicKeyJwk as unknown as Record<string, unknown>,
-      rotated_keys: history as unknown as Record<string, unknown>[],
+      public_key_jwk: next.publicKeyJwk as unknown as Json,
+      rotated_keys: history as unknown as Json,
     })
     .eq("gstin", gstin)
     .select()
