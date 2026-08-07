@@ -355,23 +355,16 @@ export async function respondToDocument(
     .eq("direction", "OUTBOUND");
 
   if (decision === "ACCEPTED") {
+    // The inbound copy is a mirror, so the element opened at send time belongs to
+    // the same trade between the same pair of GSTINs.
     const { data: element } = await supabaseAdmin
       .from("ledger_elements")
       .select("id, chain_hash")
-      .eq("document_number", doc.documentNumber)
-      .maybeSingle()
-      .then(async (result) =>
-        result.data
-          ? result
-          : await supabaseAdmin
-              .from("ledger_elements")
-              .select("id, chain_hash")
-              .eq("seller_gstin", doc.seller.gstin)
-              .eq("buyer_gstin", doc.buyer.gstin)
-              .order("sequence", { ascending: false })
-              .limit(1)
-              .maybeSingle(),
-      );
+      .eq("seller_gstin", doc.seller.gstin)
+      .eq("buyer_gstin", doc.buyer.gstin)
+      .order("sequence", { ascending: false })
+      .limit(1)
+      .maybeSingle();
 
     if (element) {
       const counter = await signAsParticipant(responder, element.chain_hash);
