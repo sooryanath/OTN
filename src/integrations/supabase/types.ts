@@ -204,6 +204,38 @@ export type Database = {
           },
         ]
       }
+      ledger_disputes: {
+        Row: {
+          created_at: string
+          element_id: string
+          id: string
+          raised_by: string
+          reason: string
+        }
+        Insert: {
+          created_at?: string
+          element_id: string
+          id?: string
+          raised_by: string
+          reason: string
+        }
+        Update: {
+          created_at?: string
+          element_id?: string
+          id?: string
+          raised_by?: string
+          reason?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ledger_disputes_element_id_fkey"
+            columns: ["element_id"]
+            isOneToOne: false
+            referencedRelation: "ledger_elements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ledger_elements: {
         Row: {
           buyer_gstin: string
@@ -268,6 +300,41 @@ export type Database = {
             columns: ["document_id"]
             isOneToOne: false
             referencedRelation: "canonical_documents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ledger_signatures: {
+        Row: {
+          created_at: string
+          element_id: string
+          gstin: string
+          id: string
+          key_id: string
+          signature: string
+        }
+        Insert: {
+          created_at?: string
+          element_id: string
+          gstin: string
+          id?: string
+          key_id: string
+          signature: string
+        }
+        Update: {
+          created_at?: string
+          element_id?: string
+          gstin?: string
+          id?: string
+          key_id?: string
+          signature?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ledger_signatures_element_id_fkey"
+            columns: ["element_id"]
+            isOneToOne: false
+            referencedRelation: "ledger_elements"
             referencedColumns: ["id"]
           },
         ]
