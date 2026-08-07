@@ -415,7 +415,6 @@ export type Database = {
     Functions: {
       is_my_gstin: { Args: { _gstin: string }; Returns: boolean }
       ledger_chain_head: { Args: { _gstin: string }; Returns: string }
-      my_gstins: { Args: never; Returns: string[] }
     }
     Enums: {
       [_ in never]: never
