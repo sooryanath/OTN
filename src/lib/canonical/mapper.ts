@@ -39,10 +39,12 @@ export function rowToCanonical(row: DocumentRow): CanonicalDocument {
     seller: row.seller as Party,
     buyer: row.buyer as Party,
     lines: (row.lines ?? []) as LineItem[],
-    transport: (row.transport ?? undefined) as Transport | undefined,
-    references: (row.doc_references ?? undefined) as CanonicalDocument["references"],
+    ...(row.transport ? { transport: row.transport as Transport } : {}),
+    ...(row.doc_references
+      ? { references: row.doc_references as NonNullable<CanonicalDocument["references"]> }
+      : {}),
     paymentTermsDays: row.payment_terms_days,
-    notes: row.notes ?? undefined,
+    ...(row.notes ? { notes: row.notes } : {}),
     revision: row.revision,
     contentHash: row.content_hash,
     createdAt: row.created_at,
