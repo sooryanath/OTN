@@ -14,13 +14,408 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      canonical_documents: {
+        Row: {
+          buyer: Json
+          buyer_gstin: string
+          content_hash: string
+          created_at: string
+          created_by: string | null
+          currency: string
+          direction: string
+          doc_references: Json | null
+          document_number: string
+          id: string
+          issue_date: string
+          kind: string
+          lines: Json
+          notes: string | null
+          payment_terms_days: number
+          revision: number
+          seller: Json
+          seller_gstin: string
+          source: string
+          status: string
+          totals: Json
+          transport: Json | null
+          updated_at: string
+        }
+        Insert: {
+          buyer: Json
+          buyer_gstin: string
+          content_hash: string
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          direction?: string
+          doc_references?: Json | null
+          document_number: string
+          id?: string
+          issue_date: string
+          kind: string
+          lines: Json
+          notes?: string | null
+          payment_terms_days?: number
+          revision?: number
+          seller: Json
+          seller_gstin: string
+          source?: string
+          status?: string
+          totals?: Json
+          transport?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          buyer?: Json
+          buyer_gstin?: string
+          content_hash?: string
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          direction?: string
+          doc_references?: Json | null
+          document_number?: string
+          id?: string
+          issue_date?: string
+          kind?: string
+          lines?: Json
+          notes?: string | null
+          payment_terms_days?: number
+          revision?: number
+          seller?: Json
+          seller_gstin?: string
+          source?: string
+          status?: string
+          totals?: Json
+          transport?: Json | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      document_revisions: {
+        Row: {
+          accepted: boolean
+          author_gstin: string
+          body: Json
+          content_hash: string
+          created_at: string
+          document_id: string
+          id: string
+          origin: string
+          prev_hash: string | null
+          revision: number
+        }
+        Insert: {
+          accepted?: boolean
+          author_gstin: string
+          body: Json
+          content_hash: string
+          created_at?: string
+          document_id: string
+          id?: string
+          origin?: string
+          prev_hash?: string | null
+          revision: number
+        }
+        Update: {
+          accepted?: boolean
+          author_gstin?: string
+          body?: Json
+          content_hash?: string
+          created_at?: string
+          document_id?: string
+          id?: string
+          origin?: string
+          prev_hash?: string | null
+          revision?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "document_revisions_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "canonical_documents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      envelopes: {
+        Row: {
+          action: string
+          attempts: number
+          body_hash: string
+          created_at: string
+          dead_lettered: boolean
+          direction: string
+          document_id: string
+          from_gstin: string
+          id: string
+          idempotency_key: string
+          last_error: string | null
+          signature: string
+          signer_key_id: string
+          status: string
+          to_gstin: string
+          transitions: Json
+        }
+        Insert: {
+          action: string
+          attempts?: number
+          body_hash: string
+          created_at?: string
+          dead_lettered?: boolean
+          direction: string
+          document_id: string
+          from_gstin: string
+          id?: string
+          idempotency_key: string
+          last_error?: string | null
+          signature: string
+          signer_key_id: string
+          status?: string
+          to_gstin: string
+          transitions?: Json
+        }
+        Update: {
+          action?: string
+          attempts?: number
+          body_hash?: string
+          created_at?: string
+          dead_lettered?: boolean
+          direction?: string
+          document_id?: string
+          from_gstin?: string
+          id?: string
+          idempotency_key?: string
+          last_error?: string | null
+          signature?: string
+          signer_key_id?: string
+          status?: string
+          to_gstin?: string
+          transitions?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "envelopes_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "canonical_documents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ledger_elements: {
+        Row: {
+          buyer_gstin: string
+          chain_hash: string
+          created_at: string
+          credit: Json
+          debit: Json
+          dispute: Json | null
+          document_id: string
+          document_kind: string
+          event_hash: string
+          id: string
+          narrative: string
+          prev_hash: string
+          seller_gstin: string
+          sequence: number
+          signatures: Json
+          status: string
+          tax: Json
+        }
+        Insert: {
+          buyer_gstin: string
+          chain_hash: string
+          created_at?: string
+          credit: Json
+          debit: Json
+          dispute?: Json | null
+          document_id: string
+          document_kind: string
+          event_hash: string
+          id?: string
+          narrative: string
+          prev_hash?: string
+          seller_gstin: string
+          sequence?: number
+          signatures?: Json
+          status?: string
+          tax?: Json
+        }
+        Update: {
+          buyer_gstin?: string
+          chain_hash?: string
+          created_at?: string
+          credit?: Json
+          debit?: Json
+          dispute?: Json | null
+          document_id?: string
+          document_kind?: string
+          event_hash?: string
+          id?: string
+          narrative?: string
+          prev_hash?: string
+          seller_gstin?: string
+          sequence?: number
+          signatures?: Json
+          status?: string
+          tax?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ledger_elements_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "canonical_documents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      participant_private_keys: {
+        Row: {
+          active: boolean
+          created_at: string
+          gstin: string
+          key_id: string
+          private_key_jwk: Json
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          gstin: string
+          key_id: string
+          private_key_jwk: Json
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          gstin?: string
+          key_id?: string
+          private_key_jwk?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "participant_private_keys_gstin_fkey"
+            columns: ["gstin"]
+            isOneToOne: false
+            referencedRelation: "participants"
+            referencedColumns: ["gstin"]
+          },
+        ]
+      }
+      participants: {
+        Row: {
+          address: string
+          city: string
+          created_at: string
+          email: string | null
+          endpoint: string
+          gstin: string
+          key_id: string | null
+          legal_name: string
+          phone: string | null
+          pincode: string
+          profiles: string[]
+          public_key_jwk: Json | null
+          rotated_keys: Json
+          state_code: string
+          status: string
+          trade_name: string | null
+          user_id: string
+        }
+        Insert: {
+          address?: string
+          city?: string
+          created_at?: string
+          email?: string | null
+          endpoint?: string
+          gstin: string
+          key_id?: string | null
+          legal_name: string
+          phone?: string | null
+          pincode?: string
+          profiles?: string[]
+          public_key_jwk?: Json | null
+          rotated_keys?: Json
+          state_code: string
+          status?: string
+          trade_name?: string | null
+          user_id: string
+        }
+        Update: {
+          address?: string
+          city?: string
+          created_at?: string
+          email?: string | null
+          endpoint?: string
+          gstin?: string
+          key_id?: string | null
+          legal_name?: string
+          phone?: string | null
+          pincode?: string
+          profiles?: string[]
+          public_key_jwk?: Json | null
+          rotated_keys?: Json
+          state_code?: string
+          status?: string
+          trade_name?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profile_submissions: {
+        Row: {
+          adapter: string
+          created_at: string
+          document_id: string
+          id: string
+          payload: Json | null
+          profile: string
+          reference_number: string | null
+          response: Json | null
+          status: string
+        }
+        Insert: {
+          adapter?: string
+          created_at?: string
+          document_id: string
+          id?: string
+          payload?: Json | null
+          profile: string
+          reference_number?: string | null
+          response?: Json | null
+          status?: string
+        }
+        Update: {
+          adapter?: string
+          created_at?: string
+          document_id?: string
+          id?: string
+          payload?: Json | null
+          profile?: string
+          reference_number?: string | null
+          response?: Json | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profile_submissions_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "canonical_documents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_my_gstin: { Args: { _gstin: string }; Returns: boolean }
+      ledger_chain_head: { Args: { _gstin: string }; Returns: string }
+      my_gstins: { Args: never; Returns: string[] }
     }
     Enums: {
       [_ in never]: never
