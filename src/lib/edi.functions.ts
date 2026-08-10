@@ -71,7 +71,7 @@ export const registerParticipant = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { createParticipant } = await import("@/lib/registry.server");
-    const row = await createParticipant(context.userId, data);
+    const row = await createParticipant(context.userId, data as unknown as import("@/lib/registry.server").ParticipantInput);
     return { gstin: row.gstin, keyId: row.key_id };
   });
 
@@ -103,7 +103,7 @@ export const createDraft = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => draftSchema.parse(input))
   .handler(async ({ data, context }) => {
     const { persistDraft } = await import("@/lib/exchange.server");
-    const row = await persistDraft(context.userId, data);
+    const row = await persistDraft(context.userId, data as unknown as Parameters<typeof persistDraft>[1]);
     return { id: row.id, contentHash: row.content_hash };
   });
 
