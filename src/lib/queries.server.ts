@@ -207,7 +207,8 @@ export async function raiseDispute(userId: string, elementId: string, reason: st
 
   const { error: insertError } = await supabaseAdmin
     .from("ledger_disputes")
-    .insert({ element_id: elementId, gstin, reason });
+    .insert({ element_id: elementId, raised_by: gstin, reason });
+
   if (insertError) throw new Error(insertError.message);
 
   return { ok: true };
