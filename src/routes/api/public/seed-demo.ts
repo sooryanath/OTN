@@ -52,7 +52,7 @@ export const Route = createFileRoute("/api/public/seed-demo")({
 
         // 1. Demo auth user (idempotent).
         const list = await supabaseAdmin.auth.admin.listUsers({ page: 1, perPage: 200 });
-        if (list.error) throw new Error(list.error.message);
+        if (list.error) throw new Error(JSON.stringify(list.error));
         let user = list.data.users.find((u) => u.email === DEMO_EMAIL);
 
         if (!user) {
@@ -61,7 +61,7 @@ export const Route = createFileRoute("/api/public/seed-demo")({
             password: DEMO_PASSWORD,
             email_confirm: true,
           });
-          if (created.error) throw new Error(created.error.message);
+          if (created.error) throw new Error(JSON.stringify(created.error));
           user = created.data.user!;
         }
         const userId = user.id;
