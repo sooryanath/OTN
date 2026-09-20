@@ -475,6 +475,125 @@ export type Database = {
           },
         ]
       }
+      zoho_books_connections: {
+        Row: {
+          access_token_encrypted: string
+          access_token_expires_at: string
+          created_at: string
+          data_center: string
+          gstin: string
+          id: string
+          last_error: string | null
+          organization_id: string
+          organization_name: string
+          refresh_token_encrypted: string
+          scopes: string[]
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          access_token_encrypted: string
+          access_token_expires_at: string
+          created_at?: string
+          data_center?: string
+          gstin: string
+          id?: string
+          last_error?: string | null
+          organization_id: string
+          organization_name: string
+          refresh_token_encrypted: string
+          scopes?: string[]
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          access_token_encrypted?: string
+          access_token_expires_at?: string
+          created_at?: string
+          data_center?: string
+          gstin?: string
+          id?: string
+          last_error?: string | null
+          organization_id?: string
+          organization_name?: string
+          refresh_token_encrypted?: string
+          scopes?: string[]
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "zoho_books_connections_gstin_fkey"
+            columns: ["gstin"]
+            isOneToOne: false
+            referencedRelation: "participants"
+            referencedColumns: ["gstin"]
+          },
+        ]
+      }
+      zoho_books_sync_records: {
+        Row: {
+          created_at: string
+          document_id: string
+          error_message: string | null
+          gstin: string
+          id: string
+          provider_status: string | null
+          resource: string
+          status: string
+          synced_at: string | null
+          updated_at: string
+          user_id: string
+          zoho_record_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          document_id: string
+          error_message?: string | null
+          gstin: string
+          id?: string
+          provider_status?: string | null
+          resource: string
+          status?: string
+          synced_at?: string | null
+          updated_at?: string
+          user_id: string
+          zoho_record_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          document_id?: string
+          error_message?: string | null
+          gstin?: string
+          id?: string
+          provider_status?: string | null
+          resource?: string
+          status?: string
+          synced_at?: string | null
+          updated_at?: string
+          user_id?: string
+          zoho_record_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "zoho_books_sync_records_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "canonical_documents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "zoho_books_sync_records_gstin_fkey"
+            columns: ["gstin"]
+            isOneToOne: false
+            referencedRelation: "participants"
+            referencedColumns: ["gstin"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
