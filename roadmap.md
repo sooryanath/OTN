@@ -1,0 +1,2 @@
+- [ ] Build secure per-business Zoho Books integration foundation
+- [ ] Create and deliver the Open Trade Network technical architecture as a Word document
