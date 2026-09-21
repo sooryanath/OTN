@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated/app'
 import { Route as ApiPublicSeedDemoRouteImport } from './routes/api/public/seed-demo'
+import { Route as ApiPublicZohoCallbackRouteImport } from './routes/api/public/zoho/callback'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -39,18 +40,25 @@ const ApiPublicSeedDemoRoute = ApiPublicSeedDemoRouteImport.update({
   path: '/api/public/seed-demo',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicZohoCallbackRoute = ApiPublicZohoCallbackRouteImport.update({
+  id: '/api/public/zoho/callback',
+  path: '/api/public/zoho/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/app': typeof AuthenticatedAppRoute
   '/api/public/seed-demo': typeof ApiPublicSeedDemoRoute
+  '/api/public/zoho/callback': typeof ApiPublicZohoCallbackRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/app': typeof AuthenticatedAppRoute
   '/api/public/seed-demo': typeof ApiPublicSeedDemoRoute
+  '/api/public/zoho/callback': typeof ApiPublicZohoCallbackRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -59,12 +67,23 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/_authenticated/app': typeof AuthenticatedAppRoute
   '/api/public/seed-demo': typeof ApiPublicSeedDemoRoute
+  '/api/public/zoho/callback': typeof ApiPublicZohoCallbackRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/app' | '/api/public/seed-demo'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/app'
+    | '/api/public/seed-demo'
+    | '/api/public/zoho/callback'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/app' | '/api/public/seed-demo'
+  to:
+    | '/'
+    | '/auth'
+    | '/app'
+    | '/api/public/seed-demo'
+    | '/api/public/zoho/callback'
   id:
     | '__root__'
     | '/'
@@ -72,6 +91,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/_authenticated/app'
     | '/api/public/seed-demo'
+    | '/api/public/zoho/callback'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -79,6 +99,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   ApiPublicSeedDemoRoute: typeof ApiPublicSeedDemoRoute
+  ApiPublicZohoCallbackRoute: typeof ApiPublicZohoCallbackRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -118,6 +139,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicSeedDemoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/zoho/callback': {
+      id: '/api/public/zoho/callback'
+      path: '/api/public/zoho/callback'
+      fullPath: '/api/public/zoho/callback'
+      preLoaderRoute: typeof ApiPublicZohoCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -137,6 +165,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   ApiPublicSeedDemoRoute: ApiPublicSeedDemoRoute,
+  ApiPublicZohoCallbackRoute: ApiPublicZohoCallbackRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
