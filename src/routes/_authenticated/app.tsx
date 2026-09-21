@@ -18,6 +18,12 @@ import {
   rotateKey,
   sendDocumentFn,
 } from "@/lib/edi.functions";
+import {
+  beginZohoConnection,
+  disconnectZoho,
+  listZohoConnections,
+  syncZohoDocument,
+} from "@/lib/zoho.functions";
 import { formatINR } from "@/lib/canonical/totals";
 import { DOC_KIND_LABEL, type DocKind } from "@/lib/canonical/types";
 import { Button } from "@/components/ui/button";
@@ -95,6 +101,7 @@ function Dashboard() {
             <TabsTrigger value="compose">Compose</TabsTrigger>
             <TabsTrigger value="ledger">Shared journal</TabsTrigger>
             <TabsTrigger value="registry">Registry</TabsTrigger>
+            <TabsTrigger value="integrations">Integrations</TabsTrigger>
           </TabsList>
 
           <TabsContent value="documents" className="mt-6">
@@ -108,6 +115,9 @@ function Dashboard() {
           </TabsContent>
           <TabsContent value="registry" className="mt-6">
             <RegistryPanel />
+          </TabsContent>
+          <TabsContent value="integrations" className="mt-6">
+            <IntegrationsPanel />
           </TabsContent>
         </Tabs>
       </main>
@@ -259,12 +269,96 @@ function RegistryPanel() {
   );
 }
 
+function IntegrationsPanel() {
+  const queryClient = useQueryClient();
+  const participants = useParticipants();
+  const fetchConnections = useServerFn(listZohoConnections);
+  const startConnection = useServerFn(beginZohoConnection);
+  const disconnectConnection = useServerFn(disconnectZoho);
+  const connections = useQuery({ queryKey: ["zoho-connections"], queryFn: () => fetchConnections() });
+
+  const connect = useMutation({
+    mutationFn: (gstin: string) => startConnection({ data: { gstin, returnTo: "/app" } }),
+    onSuccess: ({ authorizationUrl }) => {
+      window.location.assign(authorizationUrl);
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
+
+  const disconnect = useMutation({
+    mutationFn: (gstin: string) => disconnectConnection({ data: { gstin } }),
+    onSuccess: () => {
+      toast.success("Zoho Books disconnected");
+      void queryClient.invalidateQueries({ queryKey: ["zoho-connections"] });
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
+
+  const connectionByGstin = new Map((connections.data ?? []).map((connection) => [connection.gstin, connection]));
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Zoho Books</CardTitle>
+        <CardDescription>
+          Connect one Zoho Books organisation to each GSTIN. Trade Connect remains the source of truth;
+          supported documents are projected into Zoho only when you choose to sync them.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="rounded-md border border-dashed p-4 text-sm text-muted-foreground">
+          Zoho credentials are not configured for this preview yet. Once the Zoho application is added,
+          each business can authorize its own organisation without sharing credentials with another business.
+        </div>
+        {(participants.data ?? []).map((participant) => {
+          const connection = connectionByGstin.get(participant.gstin);
+          return (
+            <div key={participant.gstin} className="flex flex-wrap items-center justify-between gap-3 rounded-md border p-4">
+              <div>
+                <p className="font-medium">{participant.legal_name}</p>
+                <p className="font-mono text-xs text-muted-foreground">{participant.gstin}</p>
+                {connection && (
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {connection.organization_name} · {connection.status.toLowerCase()}
+                  </p>
+                )}
+              </div>
+              {connection ? (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  disabled={disconnect.isPending}
+                  onClick={() => disconnect.mutate(participant.gstin)}
+                >
+                  Disconnect
+                </Button>
+              ) : (
+                <Button
+                  size="sm"
+                  disabled={connect.isPending}
+                  onClick={() => connect.mutate(participant.gstin)}
+                >
+                  Connect Zoho Books
+                </Button>
+              )}
+            </div>
+          );
+        })}
+        {(participants.data ?? []).length === 0 && (
+          <p className="text-sm text-muted-foreground">Register a GSTIN first, then connect its Zoho Books organisation.</p>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
 function DocumentsPanel() {
   const queryClient = useQueryClient();
   const fetchDocs = useServerFn(listMyDocuments);
   const send = useServerFn(sendDocumentFn);
   const respond = useServerFn(respondFn);
   const project = useServerFn(gstProjection);
+  const sync = useServerFn(syncZohoDocument);
   const [projection, setProjection] = useState<string | null>(null);
 
   const docs = useQuery({ queryKey: ["documents"], queryFn: () => fetchDocs() });
@@ -278,6 +372,12 @@ function DocumentsPanel() {
       toast.success("Signed and recorded");
       void queryClient.invalidateQueries();
     },
+    onError: (error: Error) => toast.error(error.message),
+  });
+
+  const syncMutation = useMutation({
+    mutationFn: (documentId: string) => sync({ data: { documentId } }),
+    onSuccess: () => toast.success("Document synced to Zoho Books"),
     onError: (error: Error) => toast.error(error.message),
   });
 
@@ -354,6 +454,16 @@ function DocumentsPanel() {
                   >
                     GST JSON
                   </Button>
+                  {["INVOICE", "CREDIT_NOTE", "ORDER", "DISPATCH"].includes(d.kind) && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      disabled={syncMutation.isPending}
+                      onClick={() => syncMutation.mutate(d.id)}
+                    >
+                      Sync Zoho
+                    </Button>
+                  )}
                 </TableCell>
               </TableRow>
             ))}
