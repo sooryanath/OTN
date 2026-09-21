@@ -599,8 +599,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      is_my_gstin: { Args: { _gstin: string }; Returns: boolean }
-      ledger_chain_head: { Args: { _gstin: string }; Returns: string }
+      [_ in never]: never
     }
     Enums: {
       [_ in never]: never
