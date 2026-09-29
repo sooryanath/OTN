@@ -54,7 +54,7 @@ function Index() {
     <div className="min-h-screen bg-background">
       <header className="border-b">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
-          <span className="text-sm font-semibold tracking-tight">Trade Connect India</span>
+          <span className="text-sm font-semibold tracking-tight">Open Trade Network&nbsp;</span>
           <Link
             to="/auth"
             className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
